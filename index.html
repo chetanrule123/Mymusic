@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Music-Mellow</title>
+</head>
+
+<body class="center" id="bod">
+    <header>
+        <h1>MUSIC-MELLOW</h1>
+    </header>
+    <div class="b_layer"></div>
+    <div class="card">
+        <img id="card_img" src="images/1.jpg" alt="">
+        <h2 id="title">THUNDER</h2>
+        <div class="controls center">
+            <button onclick="prev();"><img style="transform: rotate(180deg);" src="images/next.png" alt=""></button>
+            <button onclick="playsong(this)"><img id="play" src="images/play.png" alt=""></button>
+            <button onclick="next();"><img src="images/next.png" alt=""></button>
+        </div>
+    </div>
+    <div id="progress">
+        <input type="range" name="" id="slider" value="0" min="0" max="100">
+        <div id="fill">
+
+        </div>
+    </div>
+    <div id="timer" style="color: white; z-index: 1;">00:00/00:00</div>
+    <footer>
+        <h3>Powered by: <a href="https://www.music-mellow.com">N.Chetan</a></h3>
+    </footer>
+    <script>
+        var audio, name, seekto, seeking;
+        audio = new Audio(src = "audio_files/1.mp3");
+        var audio_files = ["1.mp3", "2.mp3", "3.mp3", "4.mp3", "5.mp3"];
+        var images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
+        var titles = ["THUNDER", "STORM", "MOBILE", "MELODY", "PIANO"];
+        var count = 0;
+        let bod = document.getElementById('bod');
+        let card_img = document.getElementById('card_img');
+        let title = document.getElementById('title');
+        let play = document.getElementById('play');
+        let progress = document.getElementById('progress');
+        let slider = document.getElementById('slider');
+        let fill = document.getElementById('fill');
+        let timer = document.getElementById('timer');
+        slider.addEventListener('mousedown', update);
+        fill.addEventListener('mousedown', update);
+
+        function update(param) {
+            let value = param.clientX - slider.offsetLeft;
+            if (value < 0) {
+                value = 0;
+            } else if (value >= 270) {
+                value = 270;
+            }
+            audio.currentTime = (audio.duration * value) / 270;
+
+        }
+        audio.addEventListener('timeupdate', function() {
+            timer.innerHTML = convert(audio.currentTime) + "/" + convert(audio.duration);
+            slider.value = (audio.currentTime * 100) / audio.duration;
+            fill.style.width = slider.value + "%";
+            if (audio.ended) {
+                next();
+            }
+        });
+
+        function convert(seconds) {
+            let sec = Math.floor(seconds % 60);
+            let min = Math.floor(seconds / 60);
+            sec = (sec < 10) ? "0" + sec : sec;
+            min = (min < 10) ? "0" + min : min;
+            let time = min + ":" + sec;
+            return time;
+        }
+
+        function playsong() {
+            if (audio.paused) {
+                audio.play();
+                play.src = "images/pause.png"
+            } else {
+                audio.pause();
+                play.src = "images/play.png"
+            }
+        }
+
+        function next() {
+            count += 1;
+            if (count > audio_files.length - 1) {
+                count = 0;
+            }
+            bod.style.backgroundImage = "url(images/" + images[count] + ")";
+            card_img.src = "images/" + images[count];
+            title.innerHTML = titles[count];
+            audio.src = "audio_files/" + audio_files[count];
+            audio.play();
+            play.src = "images/pause.png"
+        }
+
+        function prev() {
+            count -= 1;
+            if (count < 0) {
+                count = audio_files.length - 1;
+            }
+            card_img.src = "images/" + images[count];
+            bod.style.backgroundImage = "url(images/" + images[count] + ")";
+            title.innerHTML = titles[count];
+            audio.src = "audio_files/" + audio_files[count];
+            audio.play();
+            play.src = "images/pause.png"
+        }
+    </script>
+</body>
+
+</html>
