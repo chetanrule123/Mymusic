@@ -114,6 +114,41 @@
             audio.play();
             play.src = "images/pause.png"
         }
+        //mobile view touch event
+        var isMobile = {
+            Android: function() {
+                return navigator.userAgent.match(/Android/i);
+            },
+            BlackBerry: function() {
+                return navigator.userAgent.match(/BlackBerry/i);
+            },
+            iOS: function() {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function() {
+                return navigator.userAgent.match(/Opera Mini/i);
+            },
+            Windows: function() {
+                return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+            },
+            any: function() {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+            }
+        };
+        if (isMobile.any()) {
+            slider.addEventListener('touchstart', updatemobile);
+            fill.addEventListener('touchstart', updatemobile);
+        }
+
+        function updatemobile(param) {
+            let value = param.touches[0].clientX - slider.offsetLeft;
+            if (value < 0) {
+                value = 0;
+            } else if (value >= 270) {
+                value = 270;
+            }
+            audio.currentTime = (audio.duration * value) / 270;
+        }
     </script>
 </body>
 
